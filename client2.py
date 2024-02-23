@@ -4,17 +4,18 @@ import socket
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(("localhost", 9999))
 
-f_name = "received_test.c"  # Define the file name
+file_name = "received_test.py"  # Define the file name
 # file_size = os.path.getsize("test.c")  # Get the file size
-file_name = f_name +"<END_FILENAME>"
-print(file_name)
-client.send((file_name).encode())
+
+# # Send file name
+client.send((file_name + "<END_FILENAME>").encode())
 # client.settimeout(20)
+
 # Send file size
 #client.send(str(file_size).encode())
 
 # Send file content
-with open("test.c", "rb") as file:
+with open("test.py", "rb") as file:
     while True:
         data = file.read(1024)
         if not data:
