@@ -9,6 +9,8 @@ f_name = "received_test.c"  # Define the file name
 file_name = f_name +"<END_FILENAME>"
 print(file_name)
 client.send((file_name).encode())
+t = client.recv(1024)
+print(t.decode())
 # client.settimeout(20)
 # Send file size
 #client.send(str(file_size).encode())

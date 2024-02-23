@@ -12,17 +12,20 @@ def main():
         file_name = receive_file_name(client)
         thread = threading.Thread(target=receivefile,args=(file_name,client))
         thread.start()
+        print(f"Active clients: {threading.activeCount()-1}")
 
 def receive_file_name(client_socket):
     file_name = b""  # Initialize an empty byte string to store received data
     while True:
-        data = client_socket.recv(12)  # Receive data from the client
-        if not data:  # If no data is received, break the loop
+        data = client_socket.recv(12) 
+        if not data:  
             break
         file_name += data  # Concatenate the received data
         if b"<END_FILENAME>" in file_name:  # Check if the end marker is present in the received data
             file_name = file_name.replace(b"<END_FILENAME>", b"")  # Remove the end marker
             break
+    response_message = f"Filename {file_name.decode()} received successfully!"
+    client_socket.sendall(response_message.encode())
     return file_name.decode()  # Decode the byte string to get the file name as a string
 
 def compile_and_run(filename):
