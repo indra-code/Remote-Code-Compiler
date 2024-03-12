@@ -1,18 +1,50 @@
 import subprocess
 import socket
 import threading
+import os
+import nmap
+import ssl
+
+#nm = nmap.PortScanner()
+os.environ['PYDEVD_DISABLE_FILE_VALIDATION'] = '1'
+def send_certificate(client_socket):
+    # Path to the server's certificate file
+    cert_file_path = "server.crt"
+
+    # Open the certificate file and read its contents
+    with open(cert_file_path, "rb") as cert_file:
+        certificate_data = cert_file.read()
+
+    # Send the certificate data to the client
+    client_socket.sendall(certificate_data)
 def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     port = 9999
-    server.bind(("localhost", port))
+    ipaddress = "192.168.1.9"
+    server.bind((ipaddress, port))
     server.listen()
     print(f"Server is listening at port: {port}")
+    print("Clients: ")
     while True:
         client, addr = server.accept()
-        file_name = receive_file_name(client)
-        thread = threading.Thread(target=receivefile,args=(file_name,client))
-        thread.start()
-        print(f"Active clients: {threading.activeCount()-1}")
+        send_certificate(client)
+        try:
+            # Wrap the client socket with SSL
+            server_ssl = ssl.wrap_socket(
+                client,
+                server_side=True,
+                certfile="./server.crt",
+                keyfile="./server.key",
+                ssl_version=ssl.PROTOCOL_TLSv1_2
+            )
+            file_name = receive_file_name(server_ssl)
+            thread = threading.Thread(target=receivefile, args=(file_name, server_ssl))
+            thread.start()
+            print(f"Active clients: {threading.activeCount()-1}")
+        except ssl.SSLError as e:
+            print(f"SSL Error: {e}")
+        
+
 
 def receive_file_name(client_socket):
     file_name = b""  # Initialize an empty byte string to store received data
@@ -43,6 +75,9 @@ def compile_and_run(filename):
                 executable = subprocess.run([filename[:-2] + '.exe'], capture_output=True, text=True, timeout=10)
                 output = executable.stdout
                 error = executable.stderr
+        elif filename.endswith(".rs"):
+            print("ya")
+
         else:
             pass
 
