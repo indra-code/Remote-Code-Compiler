@@ -20,7 +20,7 @@ def send_certificate(client_socket):
 def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     port = 9999
-    ipaddress = "192.168.1.9"
+    ipaddress = "localhost" #use ip address here
     server.bind((ipaddress, port))
     server.listen()
     print(f"Server is listening at port: {port}")
