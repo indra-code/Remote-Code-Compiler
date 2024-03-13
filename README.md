@@ -1,8 +1,8 @@
 Sem 4 Computer Networks Project, a remote code compiler/interpreter for c and python respectively.Uses client server architecture and socket programming.
 
-### Commands to setup server key and server certificate on server:
+___Note:___ Run the program with the flag : `-Xfrozen_modules=off`
 
-_Note:_ Runt the program with the flag : `-Xfrozen_modules=off`
+### Commands to setup server key and server certificate on server:
 
 1. `openssl genrsa -out server.key 2048`
 
