@@ -2,10 +2,8 @@ import subprocess
 import socket
 import threading
 import os
-import nmap
 import ssl
 
-#nm = nmap.PortScanner()
 os.environ['PYDEVD_DISABLE_FILE_VALIDATION'] = '1'
 def send_certificate(client_socket):
     # Path to the server's certificate file
@@ -23,10 +21,12 @@ def main():
     ipaddress = "localhost" #use ip address here
     server.bind((ipaddress, port))
     server.listen()
+    os.system('cls')
     print(f"Server is listening at port: {port}")
     print("Clients: ")
     while True:
         client, addr = server.accept()
+        host = addr
         send_certificate(client)
         try:
             # Wrap the client socket with SSL
@@ -38,7 +38,7 @@ def main():
                 ssl_version=ssl.PROTOCOL_TLSv1_2
             )
             file_name = receive_file_name(server_ssl)
-            thread = threading.Thread(target=receivefile, args=(file_name, server_ssl))
+            thread = threading.Thread(target=receivefile, args=(file_name, server_ssl,host))
             thread.start()
             print(f"Active clients: {threading.activeCount()-1}")
         except ssl.SSLError as e:
@@ -90,9 +90,9 @@ def compile_and_run(filename):
     except Exception as e:
         return f"Error: {str(e)}"
     
-def receivefile(file_name,client):
-    
-    print("Receiving:", file_name)
+def receivefile(file_name,client,host):
+    print("Connection from {}:{}\n".format(host[0],host[1]))
+    print("Receiving:\n", file_name)
     file = open(file_name, "wb")
     while True:
         data = client.recv(1024)
