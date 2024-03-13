@@ -76,7 +76,9 @@ def compile_and_run(filename):
                 output = executable.stdout
                 error = executable.stderr
         elif filename.endswith(".rs"):
-            print("ya")
+             result = subprocess.run(['rustc', filename], capture_output=True, text=True, timeout=10)
+             output= result.stdout
+             error = result.stderr
 
         else:
             pass
