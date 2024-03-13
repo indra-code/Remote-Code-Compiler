@@ -1,5 +1,5 @@
-Sem 4 Computer Networks Project, a remote code compiler/interpreter for c and python respectively.Uses client server architecture and socket programming.
-
+### A Remote code executer program in Python using the socket library. Includes client & server architecture.
+Done as the project for Computer Networks Subject in the 4th Semester.
 ___Note:___ Run the program with the flag : `-Xfrozen_modules=off`
 
 ### Commands to setup server key and server certificate on server:
